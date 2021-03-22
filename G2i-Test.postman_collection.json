@@ -1,0 +1,286 @@
+{
+	"info": {
+		"_postman_id": "7f100b08-96b8-477c-8c1d-48b3406ba354",
+		"name": "G2i Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Seach",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"string\": \"Test string\",\n    \"number\": 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://us-central1-g2itest.cloudfunctions.net/api/acronym?search=aap&limit=10&from=0",
+					"protocol": "https",
+					"host": [
+						"us-central1-g2itest",
+						"cloudfunctions",
+						"net"
+					],
+					"path": [
+						"api",
+						"acronym"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "aap"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "from",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://us-central1-g2itest.cloudfunctions.net/api/acronym/AAK",
+					"protocol": "https",
+					"host": [
+						"us-central1-g2itest",
+						"cloudfunctions",
+						"net"
+					],
+					"path": [
+						"api",
+						"acronym",
+						"AAK"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rundom",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"string\": \"Test string\",\n    \"number\": 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://us-central1-g2itest.cloudfunctions.net/api/random/100",
+					"protocol": "https",
+					"host": [
+						"us-central1-g2itest",
+						"cloudfunctions",
+						"net"
+					],
+					"path": [
+						"api",
+						"random",
+						"100"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"acronym\": \"ttt\",\n    \"definition\": \"test test test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://us-central1-g2itest.cloudfunctions.net/api/acronym",
+					"protocol": "https",
+					"host": [
+						"us-central1-g2itest",
+						"cloudfunctions",
+						"net"
+					],
+					"path": [
+						"api",
+						"acronym"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-auth-client",
+						"value": "{{x-auth-client}}",
+						"type": "text"
+					},
+					{
+						"key": "x-signature",
+						"value": "{{x-signature}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"acronym\": \"ttt\",\n    \"definition\": \"test test test and test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://us-central1-g2itest.cloudfunctions.net/api/acronym/ttt",
+					"protocol": "https",
+					"host": [
+						"us-central1-g2itest",
+						"cloudfunctions",
+						"net"
+					],
+					"path": [
+						"api",
+						"acronym",
+						"ttt"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const secret = pm.environment.get(\"API_SECRET\");",
+							"const body = pm.request.body.raw;",
+							"console.log(secret);",
+							"console.log(body);",
+							"",
+							"function generateSignature(payload, secret) {",
+							"  if (payload.constructor === Object) {",
+							"    payload = JSON.stringify(payload);",
+							"  }",
+							"",
+							"  if (payload.constructor !== Buffer) {",
+							"    payload = Buffer.from(payload, 'utf8');",
+							"  }",
+							"",
+							"//   const signature = crypto.createHash('sha256');",
+							"//   signature.update(payload);",
+							"//   signature.update(new Buffer.from(secret, 'utf8'));",
+							"",
+							"  const signature = CryptoJS.SHA256(payload+secret);",
+							"  return signature.digest('hex');",
+							"}",
+							"",
+							"const payload = body;",
+							"const signature = generateSignature(payload, secret);",
+							"pm.environment.set(\"x-signature\", signature);",
+							"console.log(signature);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-client",
+						"value": "{{x-auth-client}}",
+						"type": "text"
+					},
+					{
+						"key": "x-signature",
+						"value": "{{x-signature}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"acronym\": \"ttt\",\n    \"definition\": \"test test test and test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://us-central1-g2itest.cloudfunctions.net/api/acronym/ttt",
+					"protocol": "https",
+					"host": [
+						"us-central1-g2itest",
+						"cloudfunctions",
+						"net"
+					],
+					"path": [
+						"api",
+						"acronym",
+						"ttt"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
