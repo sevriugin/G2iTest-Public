@@ -2,7 +2,7 @@
 
 ## React Web - Trivia Game.
 
-https://g2itest.web.app/app/quiz
+https://g2itest.web.app
 
 ## NodeJS - Messaging acronyms.
 
